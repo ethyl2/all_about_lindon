@@ -66,28 +66,49 @@ function initMap() {
     styles: styles
   });
   var markers = [];
+  var labelIndex = 1;
+  var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  var defaultIcon = 'img/blue-no-dot-bigger.png';
+
+  var highlightedIcon = 'img/yellow-no-dot-bigger.png';
+
   for (var i = 0; i < locations.length; i++) {
     // Get the position, title and url from the location array.
     var position = locations[i].location;
     var title = locations[i].title;
     var url = locations[i].url;
-    // Create a marker per location, and put into markers array.
+
+    // Create a marker per location.
     var marker = new google.maps.Marker({
       position: position,
       title: title,
       animation: google.maps.Animation.DROP,
       id: i,
       url: url,
-      map: map
+      map: map,
+      label: labels[labelIndex % labels.length],
+      icon: defaultIcon
     });
-    // Push the marker to our array of markers.
+
+    labelIndex++;
+
+    // Push the marker to markers array.
     markers.push(marker);
+
     // Event listener for clicking on markers.
     marker.addListener('click', function() {
       console.log("clicked on marker");
-      //this.setIcon(highlightedIcon);
+      // If marker is moving, stop the movement and change it back to default color.
+      if (this.getAnimation() !== null) {
+          this.setAnimation(null);
+          this.setIcon(defaultIcon);
+      } else {
+      // Trigger bounce and highlighted color if the marker was not moving.
+      this.setAnimation(google.maps.Animation.BOUNCE);
+      this.setIcon(highlightedIcon);
+      }
     });
-  }
+    };
 };
 
 var viewModel = function() {
