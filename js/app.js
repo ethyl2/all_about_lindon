@@ -65,8 +65,6 @@ function initMap() {
     mapTypeControl: false,
     styles: styles
   });
-
-  // Use the location array to create an array of markers.
   var markers = [];
   for (var i = 0; i < locations.length; i++) {
     // Get the position, title and url from the location array.
@@ -77,23 +75,29 @@ function initMap() {
     var marker = new google.maps.Marker({
       position: position,
       title: title,
-      //animation: google.maps.Animation.DROP,
+      animation: google.maps.Animation.DROP,
       id: i,
       url: url,
       map: map
     });
     // Push the marker to our array of markers.
     markers.push(marker);
-    };
-  };
+    // Event listener for clicking on markers.
+    marker.addListener('click', function() {
+      console.log("clicked on marker");
+      //this.setIcon(highlightedIcon);
+    });
+  }
+};
 
 var viewModel = function() {
   var self = this;
   this.placesList = ko.observableArray([]);
+  var markers = [];
   for (var i = 0; i < locations.length; i++) {
     this.placesList.push(locations[i]);
   }
-}
+};
 
 ko.applyBindings(new viewModel());
 
