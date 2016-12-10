@@ -59,7 +59,10 @@ body {
   width: 50%;
   display: block;
   margin: 3em auto auto auto;
+}
 
+ol {
+    list-style-type: upper-alpha;
 }
 
 #map {
