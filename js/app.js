@@ -57,7 +57,28 @@ var locations = [
 
 function initMap() {
   // Define custom map styles.
-  var styles = [{"featureType":"water","stylers":[{"color":"#19a0d8"}]},{"featureType":"administrative","elementType":"labels.text.stroke","stylers":[{"color":"#ffffff"},{"weight":6}]},{"featureType":"administrative","elementType":"labels.text.fill","stylers":[{"color":"#e85113"}]},{"featureType":"road.highway","elementType":"geometry.stroke","stylers":[{"color":"#efe9e4"},{"lightness":-40}]},{"featureType":"road.arterial","elementType":"geometry.stroke","stylers":[{"color":"#efe9e4"},{"lightness":-20}]},{"featureType":"road","elementType":"labels.text.stroke","stylers":[{"lightness":100}]},{"featureType":"road","elementType":"labels.text.fill","stylers":[{"lightness":-100}]},{"featureType":"road.highway","elementType":"labels.icon"},{"featureType":"landscape","elementType":"labels","stylers":[{"visibility":"off"}]},{"featureType":"landscape","stylers":[{"lightness":20},{"color":"#efe9e4"}]},{"featureType":"landscape.man_made","stylers":[{"visibility":"off"}]},{"featureType":"water","elementType":"labels.text.stroke","stylers":[{"lightness":100}]},{"featureType":"water","elementType":"labels.text.fill","stylers":[{"lightness":-100}]},{"featureType":"poi","elementType":"labels.text.fill","stylers":[{"hue":"#11ff00"}]},{"featureType":"poi","elementType":"labels.text.stroke","stylers":[{"lightness":100}]},{"featureType":"poi","elementType":"labels.icon","stylers":[{"hue":"#4cff00"},{"saturation":58}]},{"featureType":"poi","elementType":"geometry","stylers":[{"visibility":"on"},{"color":"#f0e4d3"}]},{"featureType":"road.highway","elementType":"geometry.fill","stylers":[{"color":"#efe9e4"},{"lightness":-25}]},{"featureType":"road.arterial","elementType":"geometry.fill","stylers":[{"color":"#efe9e4"},{"lightness":-10}]},{"featureType":"poi","elementType":"labels","stylers":[{"visibility":"simplified"}]}]
+  // These styles are from https://snazzymaps.com/style/17/bright-and-bubbly
+  var styles = [{"featureType":"water","stylers":[{"color":"#19a0d8"}]},
+    {"featureType":"administrative","elementType":"labels.text.stroke","stylers":[{"color":"#ffffff"},{"weight":6}]},
+    {"featureType":"administrative","elementType":"labels.text.fill","stylers":[{"color":"#e85113"}]},
+    {"featureType":"road.highway","elementType":"geometry.stroke","stylers":[{"color":"#efe9e4"},{"lightness":-40}]},
+    {"featureType":"road.arterial","elementType":"geometry.stroke","stylers":[{"color":"#efe9e4"},{"lightness":-20}]},
+    {"featureType":"road","elementType":"labels.text.stroke","stylers":[{"lightness":100}]},
+    {"featureType":"road","elementType":"labels.text.fill","stylers":[{"lightness":-100}]},
+    {"featureType":"road.highway","elementType":"labels.icon"},
+    {"featureType":"landscape","elementType":"labels","stylers":[{"visibility":"off"}]},
+    {"featureType":"landscape","stylers":[{"lightness":20},{"color":"#efe9e4"}]},
+    {"featureType":"landscape.man_made","stylers":[{"visibility":"off"}]},
+    {"featureType":"water","elementType":"labels.text.stroke","stylers":[{"lightness":100}]},
+    {"featureType":"water","elementType":"labels.text.fill","stylers":[{"lightness":-100}]},
+    {"featureType":"poi","elementType":"labels.text.fill","stylers":[{"hue":"#11ff00"}]},
+    {"featureType":"poi","elementType":"labels.text.stroke","stylers":[{"lightness":100}]},
+    {"featureType":"poi","elementType":"labels.icon","stylers":[{"hue":"#4cff00"},{"saturation":58}]},
+    {"featureType":"poi","elementType":"geometry","stylers":[{"visibility":"on"},{"color":"#f0e4d3"}]},
+    {"featureType":"road.highway","elementType":"geometry.fill","stylers":[{"color":"#efe9e4"},{"lightness":-25}]},
+    {"featureType":"road.arterial","elementType":"geometry.fill","stylers":[{"color":"#efe9e4"},{"lightness":-10}]},
+    {"featureType":"poi","elementType":"labels","stylers":[{"visibility":"simplified"}]}];
+
   // Constructor creates a new map
   map = new google.maps.Map(document.getElementById('map'), {
     center: {lat: 40.338657, lng: -111.714654},
@@ -65,13 +86,18 @@ function initMap() {
     mapTypeControl: false,
     styles: styles
   });
+
+  // Creat instance of Infowindow
+  var placeInfowindow = new google.maps.InfoWindow();
+
+  // Variables for markers
   var markers = [];
   var labelIndex = 1;
   var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  var defaultIcon = 'img/blue-no-dot-bigger.png';
+  var defaultIcon = 'img/blue.png';
+  var highlightedIcon = 'img/yellow.png';
 
-  var highlightedIcon = 'img/yellow-no-dot-bigger.png';
-
+  // Marker constructor
   for (var i = 0; i < locations.length; i++) {
     // Get the position, title and url from the location array.
     var position = locations[i].location;
@@ -106,15 +132,33 @@ function initMap() {
       // Trigger bounce and highlighted color if the marker was not moving.
       this.setAnimation(google.maps.Animation.BOUNCE);
       this.setIcon(highlightedIcon);
+      populateInfoWindow(this, placeInfowindow);
       }
     });
-    };
+  };
 };
 
+// Create content for InfoWindow
+function populateInfoWindow(marker, infowindow) {
+  // Check to make sure the infowindow is not already opened on this marker.
+  if (infowindow.marker != marker) {
+    infowindow.setContent('');
+    infowindow.marker = marker;
+    infowindow.setContent('<div><a href="' + marker.url + '"target="_new">' + marker.title
+     + '</a></div>');
+    infowindow.open(map, marker);
+  }
+  // Make sure the marker property is cleared if the infowindow is closed.
+  infowindow.addListener('closeclick', function() {
+    infowindow.marker = null;
+  });
+};
+
+
+// Display placesList
 var viewModel = function() {
   var self = this;
   this.placesList = ko.observableArray([]);
-  var markers = [];
   for (var i = 0; i < locations.length; i++) {
     this.placesList.push(locations[i]);
   }
