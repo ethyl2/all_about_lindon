@@ -55,6 +55,15 @@ var locations = [
     url: 'http://tacoscdmx.com/', type: 'restaurant'}
 ];
 
+var types = [
+  {title: 'Pools', keyword: 'pool'},
+  {title:'Buildings', keyword: 'building'},
+  {title:'Parks', keyword: 'park'},
+  {title: 'Geocaches', keyword: 'geocache'},
+  {title: 'Trailheads', keyword: 'trailhead'},
+  {title: 'Restaurants', keyword: 'restaurant'}
+];
+
 function initMap() {
   // Define custom map styles.
   // These styles are from https://snazzymaps.com/style/17/bright-and-bubbly
@@ -87,7 +96,7 @@ function initMap() {
     styles: styles
   });
 
-  // Creat instance of Infowindow
+  // Create instance of Infowindow
   var placeInfowindow = new google.maps.InfoWindow();
 
   // Variables for markers
@@ -154,15 +163,53 @@ function populateInfoWindow(marker, infowindow) {
   });
 };
 
+// Place object contructor -- not used yet
+var Place = function(data) {
+  this.title = ko.observable(data.name);
+  this.location = ko.observable(data.location);
+  this.url = ko.observable(data.url);
+  this.type = ko.observable(data.type);
+};
 
 // Display placesList
 var viewModel = function() {
   var self = this;
-  this.placesList = ko.observableArray([]);
+  self.placesList = ko.observableArray([]);
   for (var i = 0; i < locations.length; i++) {
     this.placesList.push(locations[i]);
+    //this.placesList.push(new Place(locations[i]));
   }
-};
+
+  self.currentPlace = ko.observable(this.placesList()[0]);
+  self.setCurrentPlace = function(place) {
+    self.currentPlace(place);
+    console.log(self.currentPlace().title);
+  }
+
+  // Types list for filter
+  self.typesList = ko.observableArray([]);
+  for (var i = 0; i < types.length; i++) {
+    this.typesList.push(types[i]);
+  }
+
+  // Store places removed by filter
+  self.removedPlaces = ko.observableArray([]);
+
+  self.filterPlaces = function(placeType) {
+    // Remove all values whose type property is the selected place type,
+    // and return them as self.removedPlaces.
+    self.removedPlaces = self.placesList.remove(function (item)
+      { return item.type != placeType.keyword;});
+  };
+
+  // Restore the complete placesList by adding places in self.removedPlaces
+  self.showAllPlaces = function() {
+    for (var i = 0; i < self.removedPlaces.length; i++) {
+      self.placesList.push(self.removedPlaces[i]);
+    }
+  };
+
+}; //end of ViewModel
 
 ko.applyBindings(new viewModel());
 

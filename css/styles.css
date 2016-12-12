@@ -47,7 +47,7 @@ body {
   height: 100%;
   line-height: 35px;
   padding: 10px 10px 30px 10px;
-  text-align: left;
+  text-align: center;
   width: 25%;
   overflow: scroll;
   bottom: 0px;
@@ -61,8 +61,73 @@ body {
   margin: 3em auto auto auto;
 }
 
+/* Dropdown Button -- Code modified from http://www.w3schools.com/howto/howto_css_dropdown.asp*/
+.dropbtn, .showAll {
+    background-color: #015249;
+    color: white;
+    padding: 10px;
+    font-size: 14px;
+    border: none;
+    cursor: pointer;
+    border-radius: 3px;
+    margin-top: 1.5em;
+}
+
+/* The container <div> - needed to position the dropdown content */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+/* Dropdown Content (hidden by default) */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    font-size: 1em;
+    text-align: left;
+    list-style-type: none;
+}
+
+/* Li items inside the dropdown */
+.dropdown-content ul li {
+    color: #A5A5AF;
+    display: block;
+    margin: 0.5em;
+}
+
+/* Change color of dropdown li items on hover */
+.dropdown-content ul li:hover {
+  background-color: #f1f1f1;
+}
+
+/* Show the dropdown menu on hover */
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+/* Change the background color of the dropdown button when the dropdown content is shown */
+.dropdown:hover .dropbtn {
+    background-color: #A5A5AF;
+}
+
+.showAll:hover {
+  background-color: #A5A5AF;
+}
+
 ol {
     list-style-type: upper-alpha;
+}
+
+li:hover {
+  color: #015249;
+}
+
+li:active {
+  transform: translate(0px, 5px);
+  -webkit-transform: translate(0px, 5px);
 }
 
 #map {

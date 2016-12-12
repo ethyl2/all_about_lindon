@@ -16,10 +16,26 @@
         <h1>Discover Lindon, UT</h1>
       </div>
       <div class="options-box">
-        <img id="city_logo" src="img/lindon_city_logo_with_transparency.png" alt="Lindon City Logo">
+        <a href="https://en.wikipedia.org/wiki/Lindon,_Utah" target="_blank">
+          <img id="city_logo" src="img/lindon_city_logo_with_transparency.png" alt="Lindon City Logo"></a>
+
+        <div class="dropdown">
+          <button class="dropbtn">Filter Places</button>
+          <div class="dropdown-content">
+            <ul id="types_list" data-bind="foreach: typesList">
+              <li><span data-bind="text: title, click: $parent.filterPlaces"</span></li>
+            </ul>
+          </div>
+        </div>
+
         <ol id="places_list" data-bind="foreach: placesList">
-              <li><span data-bind="text: title"></span></li>
+              <li><span data-bind="text: title, click: $parent.setCurrentPlace"></span></li>
         </ol>
+
+        <div class="reset">
+          <button class="showAll" data-bind="click: showAllPlaces">Show All</button>
+        </div>
+
       </div>
       <div id="map"></div>
     </div>
