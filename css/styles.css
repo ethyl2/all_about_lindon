@@ -138,6 +138,11 @@ li:active {
   right: 0px;
 }
 
+#pano {
+  width: 200px;
+  height: 200px;
+}
+
 @media screen and (max-width: 400px) {
   .options-box {
     transform: translate(-300px, 0);

@@ -148,19 +148,68 @@ function initMap() {
 };
 
 // Create content for InfoWindow
+// This code is modified from Udacity example code from https://github.com/udacity/ud864
 function populateInfoWindow(marker, infowindow) {
   // Check to make sure the infowindow is not already opened on this marker.
   if (infowindow.marker != marker) {
     infowindow.setContent('');
     infowindow.marker = marker;
-    infowindow.setContent('<div><a href="' + marker.url + '"target="_new">' + marker.title
-     + '</a></div>');
-    infowindow.open(map, marker);
+
+    // Instantiate an instance of the StreetViewService
+    var streetViewService = new google.maps.StreetViewService();
+    var radius = 50;
+
+    // If status of OK is received, add pano image to infoWindow
+    function getStreetView(data, status) {
+      if (status == google.maps.StreetViewStatus.OK){
+        var nearStreetViewLocation = data.location.latLng;
+        // geometry api calculates the heading.
+
+        /* More about computeHeading from the documention found
+        at https://developers.google.com/maps/documentation/javascript/geometry.
+        When navigating on a sphere, a heading is the angle of a direction
+        from a fixed reference point, usually true north. Within the Google Maps API,
+        a heading is defined in degrees from true north, where headings are measured
+        clockwise from true north (0 degrees). You may compute this heading between
+        two locations with the computeHeading() method, passing it two from
+        and to LatLng objects.
+        */
+
+        var heading = google.maps.geometry.spherical.computeHeading(
+          nearStreetViewLocation, marker.position);
+
+        // Set up the HTML for the infoWindow
+        infowindow.setContent('<div><a href="' + marker.url + '"target="_new">' + marker.title
+          + '</a><div id="pano"></div></div>');
+
+        // Get the street view panorama
+        var panoramaOptions = {
+            position: nearStreetViewLocation,
+            pov: {
+              heading: heading,
+              pitch: 30
+            }
+          };
+        var panorama = new google.maps.StreetViewPanorama(
+          document.getElementById('pano'), panoramaOptions);
+
+      // If street view status is not okay, set up HTML without pano div and with
+      // error message
+      } else {
+        infowindow.setContent('<div><a href="' + marker.url + '"target="_new">' + marker.title
+          + '</a><div>' + '<div>No Street View Found</div>');
+      }
+    }
+
+  // Here is where the above function is used to get the pano
+  streetViewService.getPanoramaByLocation(marker.position, radius, getStreetView);
+
+  infowindow.open(map, marker);
   }
-  // Make sure the marker property is cleared if the infowindow is closed.
-  infowindow.addListener('closeclick', function() {
-    infowindow.marker = null;
-  });
+    // Make sure the marker property is cleared if the infowindow is closed.
+    infowindow.addListener('closeclick', function() {
+      infowindow.marker = null;
+    });
 };
 
 // Place object contructor -- not used yet
