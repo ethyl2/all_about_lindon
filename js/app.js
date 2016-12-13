@@ -223,13 +223,22 @@ function populateInfoWindow(marker, infowindow) {
   });
 };
 
-// Place object contructor -- not used yet
+// Place object constructor -- not used yet
 var Place = function(data) {
   this.title = ko.observable(data.name);
   this.location = ko.observable(data.location);
   this.url = ko.observable(data.url);
   this.type = ko.observable(data.type);
+  this.id = ko.observable();
 };
+
+//Array of Place objects
+var placeObjectsArray = [];
+for (var i = 0; i < locations.length; i++) {
+  placeObjectsArray.push(new Place(locations[i]));
+  placeObjectsArray[i].id = i;
+}
+//console.log(placeObjectsArray[0].id);
 
 // Display placesList
 var viewModel = function() {
@@ -237,8 +246,9 @@ var viewModel = function() {
   self.placesList = ko.observableArray([]);
   for (var i = 0; i < locations.length; i++) {
     this.placesList.push(locations[i]);
-    //this.placesList.push(new Place(locations[i]));
+    //this.placesList.push(placeObjectsArray[i]);
   }
+  //console.log(placeObjectsArray[0]);
 
   self.currentPlace = ko.observable(this.placesList()[0]);
   self.setCurrentPlace = function(place) {
