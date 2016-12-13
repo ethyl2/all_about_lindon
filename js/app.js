@@ -159,6 +159,8 @@ function populateInfoWindow(marker, infowindow) {
     var streetViewService = new google.maps.StreetViewService();
     var radius = 50;
 
+    // Here is the callback function to execute upon retrieval of a result
+    // from the Street View service.
     // If status of OK is received, add pano image to infoWindow
     function getStreetView(data, status) {
       if (status == google.maps.StreetViewStatus.OK){
@@ -172,7 +174,8 @@ function populateInfoWindow(marker, infowindow) {
         a heading is defined in degrees from true north, where headings are measured
         clockwise from true north (0 degrees). You may compute this heading between
         two locations with the computeHeading() method, passing it two from
-        and to LatLng objects.
+        and to LatLng objects. Here the 2 locations are the latlng
+        returned from the call to getPanoramaByLocation() and the marker's latlng.
         */
 
         var heading = google.maps.geometry.spherical.computeHeading(
@@ -190,6 +193,10 @@ function populateInfoWindow(marker, infowindow) {
               pitch: 30
             }
           };
+
+        // To display a StreetViewPanorama within a separate DOM element,
+        // in this case, the <div> element with id='pano,'
+        // pass the DOM element within the StreetViewPanorama's constructor.
         var panorama = new google.maps.StreetViewPanorama(
           document.getElementById('pano'), panoramaOptions);
 
@@ -201,15 +208,19 @@ function populateInfoWindow(marker, infowindow) {
       }
     }
 
-  // Here is where the above function is used to get the pano
+  /* Here is the call to getPanoramaByLocation() with getStreetView as its callback function.
+     getPanoramaByLocation() will return a set of panorama data within a
+     StreetViewPanoramaData object and a StreetViewStatus code denoting the status of the request */
   streetViewService.getPanoramaByLocation(marker.position, radius, getStreetView);
 
   infowindow.open(map, marker);
   }
-    // Make sure the marker property is cleared if the infowindow is closed.
-    infowindow.addListener('closeclick', function() {
-      infowindow.marker = null;
-    });
+
+  // Make sure the marker property is cleared if the infowindow is closed.
+  infowindow.addListener('closeclick', function() {
+    infowindow.marker = null;
+    marker.setAnimation(null);
+  });
 };
 
 // Place object contructor -- not used yet
