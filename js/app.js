@@ -1,4 +1,7 @@
 var map;
+var markers;
+var defaultIcon = 'img/blue.png';
+var highlightedIcon = 'img/yellow.png';
 
 var locations = [
   {title: 'Lindon Aquatics Center', location: {lat: 40.340225, lng: -111.716937},
@@ -64,29 +67,31 @@ var types = [
   {title: 'Restaurants', keyword: 'restaurant'}
 ];
 
+// Define custom map styles.
+// These styles are from https://snazzymaps.com/style/17/bright-and-bubbly
+var styles = [{"featureType":"water","stylers":[{"color":"#19a0d8"}]},
+  {"featureType":"administrative","elementType":"labels.text.stroke","stylers":[{"color":"#ffffff"},{"weight":6}]},
+  {"featureType":"administrative","elementType":"labels.text.fill","stylers":[{"color":"#e85113"}]},
+  {"featureType":"road.highway","elementType":"geometry.stroke","stylers":[{"color":"#efe9e4"},{"lightness":-40}]},
+  {"featureType":"road.arterial","elementType":"geometry.stroke","stylers":[{"color":"#efe9e4"},{"lightness":-20}]},
+  {"featureType":"road","elementType":"labels.text.stroke","stylers":[{"lightness":100}]},
+  {"featureType":"road","elementType":"labels.text.fill","stylers":[{"lightness":-100}]},
+  {"featureType":"road.highway","elementType":"labels.icon"},
+  {"featureType":"landscape","elementType":"labels","stylers":[{"visibility":"off"}]},
+  {"featureType":"landscape","stylers":[{"lightness":20},{"color":"#efe9e4"}]},
+  {"featureType":"landscape.man_made","stylers":[{"visibility":"off"}]},
+  {"featureType":"water","elementType":"labels.text.stroke","stylers":[{"lightness":100}]},
+  {"featureType":"water","elementType":"labels.text.fill","stylers":[{"lightness":-100}]},
+  {"featureType":"poi","elementType":"labels.text.fill","stylers":[{"hue":"#11ff00"}]},
+  {"featureType":"poi","elementType":"labels.text.stroke","stylers":[{"lightness":100}]},
+  {"featureType":"poi","elementType":"labels.icon","stylers":[{"hue":"#4cff00"},{"saturation":58}]},
+  {"featureType":"poi","elementType":"geometry","stylers":[{"visibility":"on"},{"color":"#f0e4d3"}]},
+  {"featureType":"road.highway","elementType":"geometry.fill","stylers":[{"color":"#efe9e4"},{"lightness":-25}]},
+  {"featureType":"road.arterial","elementType":"geometry.fill","stylers":[{"color":"#efe9e4"},{"lightness":-10}]},
+  {"featureType":"poi","elementType":"labels","stylers":[{"visibility":"simplified"}]}
+];
+
 function initMap() {
-  // Define custom map styles.
-  // These styles are from https://snazzymaps.com/style/17/bright-and-bubbly
-  var styles = [{"featureType":"water","stylers":[{"color":"#19a0d8"}]},
-    {"featureType":"administrative","elementType":"labels.text.stroke","stylers":[{"color":"#ffffff"},{"weight":6}]},
-    {"featureType":"administrative","elementType":"labels.text.fill","stylers":[{"color":"#e85113"}]},
-    {"featureType":"road.highway","elementType":"geometry.stroke","stylers":[{"color":"#efe9e4"},{"lightness":-40}]},
-    {"featureType":"road.arterial","elementType":"geometry.stroke","stylers":[{"color":"#efe9e4"},{"lightness":-20}]},
-    {"featureType":"road","elementType":"labels.text.stroke","stylers":[{"lightness":100}]},
-    {"featureType":"road","elementType":"labels.text.fill","stylers":[{"lightness":-100}]},
-    {"featureType":"road.highway","elementType":"labels.icon"},
-    {"featureType":"landscape","elementType":"labels","stylers":[{"visibility":"off"}]},
-    {"featureType":"landscape","stylers":[{"lightness":20},{"color":"#efe9e4"}]},
-    {"featureType":"landscape.man_made","stylers":[{"visibility":"off"}]},
-    {"featureType":"water","elementType":"labels.text.stroke","stylers":[{"lightness":100}]},
-    {"featureType":"water","elementType":"labels.text.fill","stylers":[{"lightness":-100}]},
-    {"featureType":"poi","elementType":"labels.text.fill","stylers":[{"hue":"#11ff00"}]},
-    {"featureType":"poi","elementType":"labels.text.stroke","stylers":[{"lightness":100}]},
-    {"featureType":"poi","elementType":"labels.icon","stylers":[{"hue":"#4cff00"},{"saturation":58}]},
-    {"featureType":"poi","elementType":"geometry","stylers":[{"visibility":"on"},{"color":"#f0e4d3"}]},
-    {"featureType":"road.highway","elementType":"geometry.fill","stylers":[{"color":"#efe9e4"},{"lightness":-25}]},
-    {"featureType":"road.arterial","elementType":"geometry.fill","stylers":[{"color":"#efe9e4"},{"lightness":-10}]},
-    {"featureType":"poi","elementType":"labels","stylers":[{"visibility":"simplified"}]}];
 
   // Constructor creates a new map
   map = new google.maps.Map(document.getElementById('map'), {
@@ -100,11 +105,9 @@ function initMap() {
   var placeInfowindow = new google.maps.InfoWindow();
 
   // Variables for markers
-  var markers = [];
-  var labelIndex = 1;
+  markers = [];
+  var labelIndex = 0;
   var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  var defaultIcon = 'img/blue.png';
-  var highlightedIcon = 'img/yellow.png';
 
   // Marker constructor
   for (var i = 0; i < locations.length; i++) {
@@ -143,9 +146,9 @@ function initMap() {
       this.setIcon(highlightedIcon);
       populateInfoWindow(this, placeInfowindow);
       }
-    });
-  };
-};
+    }); // end Marker event listener
+  }; // end Marker constructor
+}; // end initMap()
 
 // Create content for InfoWindow
 // This code is modified from Udacity example code from https://github.com/udacity/ud864
@@ -216,12 +219,14 @@ function populateInfoWindow(marker, infowindow) {
   infowindow.open(map, marker);
   }
 
-  // Make sure the marker property is cleared if the infowindow is closed.
+  // Make sure the marker property is cleared and marker has default behavior
+  // if the infowindow is closed.
   infowindow.addListener('closeclick', function() {
     infowindow.marker = null;
     marker.setAnimation(null);
+    marker.setIcon(defaultIcon);
   });
-};
+}; // end populateInfoWindow()
 
 // Place object constructor
 var Place = function(data) {
@@ -245,9 +250,15 @@ var viewModel = function() {
 
   // self.currentPlace and its associated click event
   self.currentPlace = ko.observable(this.placesList()[0]);
+  self.currentMarker = ko.observable();
+  console.log(self.currentPlace().url());
+
   self.setCurrentPlace = function(place) {
     self.currentPlace(place);
-    console.log(self.currentPlace().title());
+    console.log("currentPlace is " + self.currentPlace().title() + ".");
+    self.currentMarker(markers[self.currentPlace().id()]);
+    self.currentMarker().setIcon(highlightedIcon);
+    self.currentMarker().setAnimation(google.maps.Animation.BOUNCE);
   }
 
   // Types list for filter
