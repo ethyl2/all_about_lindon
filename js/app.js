@@ -223,37 +223,31 @@ function populateInfoWindow(marker, infowindow) {
   });
 };
 
-// Place object constructor -- not used yet
+// Place object constructor
 var Place = function(data) {
-  this.title = ko.observable(data.name);
+  this.title = ko.observable(data.title);
   this.location = ko.observable(data.location);
   this.url = ko.observable(data.url);
   this.type = ko.observable(data.type);
   this.id = ko.observable();
 };
 
-//Array of Place objects
-var placeObjectsArray = [];
-for (var i = 0; i < locations.length; i++) {
-  placeObjectsArray.push(new Place(locations[i]));
-  placeObjectsArray[i].id = i;
-}
-//console.log(placeObjectsArray[0].id);
-
-// Display placesList
 var viewModel = function() {
   var self = this;
+
+  // Make an observable array containing all of the locations
+  // and create a id for each one.
   self.placesList = ko.observableArray([]);
   for (var i = 0; i < locations.length; i++) {
-    this.placesList.push(locations[i]);
-    //this.placesList.push(placeObjectsArray[i]);
+    self.placesList.push(new Place(locations[i]));
+    self.placesList()[i].id(i);
   }
-  //console.log(placeObjectsArray[0]);
 
+  // self.currentPlace and its associated click event
   self.currentPlace = ko.observable(this.placesList()[0]);
   self.setCurrentPlace = function(place) {
     self.currentPlace(place);
-    console.log(self.currentPlace().title);
+    console.log(self.currentPlace().title());
   }
 
   // Types list for filter
