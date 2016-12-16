@@ -3,6 +3,7 @@ var markers;
 var defaultIcon = 'img/blue.png';
 var highlightedIcon = 'img/yellow.png';
 var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+var placeInfowindow;
 
 var locations = [
   {title: 'Lindon Aquatics Center', location: {lat: 40.340225, lng: -111.716937},
@@ -108,7 +109,10 @@ function initMap() {
   });
 
   // Create instance of Infowindow
-  var placeInfowindow = new google.maps.InfoWindow();
+  placeInfowindow = new google.maps.InfoWindow();
+
+  // Variable for bounds
+  var bounds = new google.maps.LatLngBounds();
 
   // Variables for markers
   markers = [];
@@ -139,6 +143,7 @@ function initMap() {
 
     // Push the marker to markers array.
     markers.push(marker);
+    bounds.extend(markers[i].position);
 
     // Event listener for clicking on markers.
     marker.addListener('click', function() {
@@ -153,8 +158,22 @@ function initMap() {
       this.setIcon(highlightedIcon);
       populateInfoWindow(this, placeInfowindow);
       }
-    }); // end Marker event listener
+    }); // end Marker click event listener
+
+    // Event listeners for mousein and mouseout of markers, changing colors
+    marker.addListener('mouseover', function() {
+      this.setIcon(highlightedIcon);
+    }); // end Marker mouseover event listener
+
+    marker.addListener('mouseout', function() {
+      this.setIcon(defaultIcon);
+    }); // end Marker mouseout event listener
+
   }; // end Marker constructor
+
+  // Extend the bounds of the map to include all of the markers
+  map.fitBounds(bounds);
+
 }; // end initMap()
 
 // Create content for InfoWindow
@@ -258,17 +277,28 @@ var viewModel = function() {
   self.placesList.sort(function (left, right) {
     return left.title() == right.title() ? 0 : (left.title() < right.title() ? -1 : 1) });
 
-  // self.currentPlace and its associated click event
+  // self.currentPlace and self.currentMarker for self.placesList click event
   self.currentPlace = ko.observable(this.placesList()[0]);
   self.currentMarker = ko.observable();
   console.log(self.currentPlace().url());
 
+  // Click event highlights and bounces the corresponding marker and displays its
+  // infoWindow
   self.setCurrentPlace = function(place) {
+
+    // First, if currentMarker had previous value, set marker icon of previous
+    // currentMarker to default and cancel animation
+    if (self.currentMarker() != null) {
+      self.currentMarker().setIcon(defaultIcon);
+      self.currentMarker().setAnimation(null);
+    }
+
     self.currentPlace(place);
     console.log("currentPlace is " + self.currentPlace().title() + ".");
     self.currentMarker(markers[self.currentPlace().id()]);
     self.currentMarker().setIcon(highlightedIcon);
     self.currentMarker().setAnimation(google.maps.Animation.BOUNCE);
+    populateInfoWindow(self.currentMarker(), placeInfowindow);
   }
 
   // Types list for filter
