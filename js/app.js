@@ -2,6 +2,7 @@ var map;
 var markers;
 var defaultIcon = 'img/blue.png';
 var highlightedIcon = 'img/yellow.png';
+var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
 var locations = [
   {title: 'Lindon Aquatics Center', location: {lat: 40.340225, lng: -111.716937},
@@ -58,6 +59,11 @@ var locations = [
     url: 'http://tacoscdmx.com/', type: 'restaurant'}
 ];
 
+// Sort the locations into alphetical order
+locations.sort(function (left, right) {
+ return left.title == right.title ? 0 : (left.title < right.title ? -1 : 1)
+  });
+
 var types = [
   {title: 'Pools', keyword: 'pool'},
   {title:'Buildings', keyword: 'building'},
@@ -107,7 +113,6 @@ function initMap() {
   // Variables for markers
   markers = [];
   var labelIndex = 0;
-  var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
   // Marker constructor
   for (var i = 0; i < locations.length; i++) {
@@ -249,6 +254,9 @@ var viewModel = function() {
     self.placesList.push(new Place(locations[i]));
     self.placesList()[i].id(i);
   }
+  // Put places in alphabetical order according to title
+  self.placesList.sort(function (left, right) {
+    return left.title() == right.title() ? 0 : (left.title() < right.title() ? -1 : 1) });
 
   // self.currentPlace and its associated click event
   self.currentPlace = ko.observable(this.placesList()[0]);
@@ -281,9 +289,12 @@ var viewModel = function() {
 
     // Highlight the markers whose places are the placeType, and remove the rest
     // from the map.
+    var labelIndex = 0;
     for (var i = 0; i < markers.length; i++) {
       if (markers[i].type == placeType.keyword) {
         markers[i].setIcon(highlightedIcon);
+        markers[i].label = labels[labelIndex % labels.length];
+        labelIndex++;
       } else {
         markers[i].setMap(null);
       }
@@ -295,12 +306,21 @@ var viewModel = function() {
     for (var i = 0; i < self.removedPlaces().length; i++) {
       self.placesList.push(self.removedPlaces()[i]);
     }
+
+    // Put places back in alphabetical order in self.placesList according to title
+    self.placesList.sort(function (left, right) {
+      return left.title() == right.title() ? 0 : (left.title() < right.title() ? -1 : 1)
+    });
+
     // Empty the self.removedPlaces so they won't be added again by accident.
     self.removedPlaces.removeAll();
     // Restore display of all markers.
+    var labelIndex = 0;
     for (var i = 0; i < markers.length; i++) {
       markers[i].setMap(map);
       markers[i].setIcon(defaultIcon);
+      markers[i].label = labels[labelIndex % labels.length];
+      labelIndex++;
     }
   };
 
