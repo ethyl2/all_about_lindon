@@ -115,6 +115,7 @@ function initMap() {
     var position = locations[i].location;
     var title = locations[i].title;
     var url = locations[i].url;
+    var type = locations[i].type;
 
     // Create a marker per location.
     var marker = new google.maps.Marker({
@@ -125,7 +126,8 @@ function initMap() {
       url: url,
       map: map,
       label: labels[labelIndex % labels.length],
-      icon: defaultIcon
+      icon: defaultIcon,
+      type: type
     });
 
     labelIndex++;
@@ -273,14 +275,32 @@ var viewModel = function() {
   self.filterPlaces = function(placeType) {
     // Remove all values whose type property is the selected place type,
     // and return them as self.removedPlaces.
-    self.removedPlaces = self.placesList.remove(function (item)
-      { return item.type != placeType.keyword;});
+    self.removedPlaces(self.placesList.remove(function (item) {
+      return item.type() != placeType.keyword;
+    }));
+
+    // Highlight the markers whose places are the placeType, and remove the rest
+    // from the map.
+    for (var i = 0; i < markers.length; i++) {
+      if (markers[i].type == placeType.keyword) {
+        markers[i].setIcon(highlightedIcon);
+      } else {
+        markers[i].setMap(null);
+      }
+    }
   };
 
   // Restore the complete placesList by adding places in self.removedPlaces
   self.showAllPlaces = function() {
-    for (var i = 0; i < self.removedPlaces.length; i++) {
-      self.placesList.push(self.removedPlaces[i]);
+    for (var i = 0; i < self.removedPlaces().length; i++) {
+      self.placesList.push(self.removedPlaces()[i]);
+    }
+    // Empty the self.removedPlaces so they won't be added again by accident.
+    self.removedPlaces.removeAll();
+    // Restore display of all markers.
+    for (var i = 0; i < markers.length; i++) {
+      markers[i].setMap(map);
+      markers[i].setIcon(defaultIcon);
     }
   };
 
