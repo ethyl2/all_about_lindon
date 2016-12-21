@@ -125,6 +125,11 @@ li:hover {
   color: #015249;
 }
 
+.markerSelected {
+  color: #015249;
+  background-color: #A5A5AF;
+}
+
 li:active {
   transform: translate(0px, 5px);
   -webkit-transform: translate(0px, 5px);
