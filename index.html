@@ -6,7 +6,7 @@
     <title>All About Lindon, UT</title>
     <link href="https://fonts.googleapis.com/css?family=Lora|Open+Sans" rel="stylesheet">
     <link href="css/styles.css" rel="stylesheet">
-    <!–– Favicon is from http://www.freefavicon.com/freefavicons/objects/iconinfo/lattice-optic-illusion-152-204321.html ––>
+    <!-- Favicon is from http://www.freefavicon.com/freefavicons/objects/iconinfo/lattice-optic-illusion-152-204321.html-->
     <link rel="icon" type="image/png" href="img/lattice.png">
   </head>
   <body>
@@ -29,7 +29,7 @@
         </div>
 
         <ol id="places_list" data-bind="foreach: placesList">
-              <li><span data-bind="text: title, click: $parent.setCurrentPlace"></span></li>
+              <li class="place" data-bind="attr: {id: id}"><span data-bind="text: title, click: $parent.setCurrentPlace"></span></li>
         </ol>
 
         <div class="reset">

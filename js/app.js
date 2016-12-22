@@ -161,20 +161,19 @@ function initMap() {
           var $selectedLi = document.getElementById(this.id);
           $selectedLi.classList.remove('markerSelected');
       } else {
-      // Trigger bounce, highlighted marker color, and infoWindow display
-      //  if the marker was not moving.
-      this.setAnimation(google.maps.Animation.BOUNCE);
-      this.setIcon(highlightedIcon);
-      populateInfoWindow(this, placeInfowindow);
-      // Remove the bouce from the previously selected marker
-      if (oldMarkerId > -1) {
-        markers[oldMarkerId].setAnimation(null);
-      }
-      // Highlight the new corresponding li
-      var $selectedLi = document.getElementById(this.id);
-      $selectedLi.classList.add('markerSelected');
-      oldMarkerId = this.id;
-
+        // Trigger bounce, highlighted marker color, and infoWindow display
+        //  if the marker was not moving.
+        this.setAnimation(google.maps.Animation.BOUNCE);
+        this.setIcon(highlightedIcon);
+        populateInfoWindow(this, placeInfowindow);
+        // Remove the bouce from the previously selected marker
+        if (oldMarkerId > -1) {
+          markers[oldMarkerId].setAnimation(null);
+        }
+        // Highlight the new corresponding li
+        var $selectedLi = document.getElementById(this.id);
+        $selectedLi.classList.add('markerSelected');
+        oldMarkerId = this.id;
       }
     }); // end Marker click event listener
 
