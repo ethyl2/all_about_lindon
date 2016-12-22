@@ -146,17 +146,34 @@ function initMap() {
     bounds.extend(markers[i].position);
 
     // Event listener for clicking on markers.
+    var oldMarkerId = -1;
     marker.addListener('click', function() {
-      console.log("clicked on marker");
-      // If marker is moving, stop the movement and change it back to default color.
+      // First, maker sure that no lis from before are still highlighted
+      var $placeLis = document.getElementsByClassName('place');
+      for (var i = 0; i < $placeLis.length; i++) {
+        $placeLis[i].classList.remove('markerSelected');
+      }
+      // If marker is moving, stop the movement, change it back to default color
+      // and remove highlighting from its corresponding li.
       if (this.getAnimation() !== null) {
           this.setAnimation(null);
           this.setIcon(defaultIcon);
+          var $selectedLi = document.getElementById(this.id);
+          $selectedLi.classList.remove('markerSelected');
       } else {
-      // Trigger bounce and highlighted color if the marker was not moving.
-      this.setAnimation(google.maps.Animation.BOUNCE);
-      this.setIcon(highlightedIcon);
-      populateInfoWindow(this, placeInfowindow);
+        // Trigger bounce, highlighted marker color, and infoWindow display
+        //  if the marker was not moving.
+        this.setAnimation(google.maps.Animation.BOUNCE);
+        this.setIcon(highlightedIcon);
+        populateInfoWindow(this, placeInfowindow);
+        // Remove the bouce from the previously selected marker
+        if (oldMarkerId > -1) {
+          markers[oldMarkerId].setAnimation(null);
+        }
+        // Highlight the new corresponding li
+        var $selectedLi = document.getElementById(this.id);
+        $selectedLi.classList.add('markerSelected');
+        oldMarkerId = this.id;
       }
     }); // end Marker click event listener
 
@@ -243,7 +260,7 @@ function populateInfoWindow(marker, infowindow) {
   streetViewService.getPanoramaByLocation(marker.position, radius, getStreetView);
 
   infowindow.open(map, marker);
-  }
+} // End code for status = OK
 
   // Make sure the marker property is cleared and marker has default behavior
   // if the infowindow is closed.
@@ -279,8 +296,8 @@ var viewModel = function() {
 
   // self.currentPlace and self.currentMarker for self.placesList click event
   self.currentPlace = ko.observable(this.placesList()[0]);
+  console.log(self.currentPlace().title());
   self.currentMarker = ko.observable();
-  console.log(self.currentPlace().url());
 
   // Click event highlights and bounces the corresponding marker and displays its
   // infoWindow
@@ -291,14 +308,24 @@ var viewModel = function() {
     if (self.currentMarker() != null) {
       self.currentMarker().setIcon(defaultIcon);
       self.currentMarker().setAnimation(null);
+
+      // Also, remove the highlighted style of the previously selected li
+      var $selectedLi = document.getElementById(self.currentPlace().id());
+      $selectedLi.classList.remove('markerSelected');
+      console.log("Removed 'markerSelected' class");
     }
 
+    // Ready to display the new selection
     self.currentPlace(place);
     console.log("currentPlace is " + self.currentPlace().title() + ".");
     self.currentMarker(markers[self.currentPlace().id()]);
     self.currentMarker().setIcon(highlightedIcon);
     self.currentMarker().setAnimation(google.maps.Animation.BOUNCE);
     populateInfoWindow(self.currentMarker(), placeInfowindow);
+
+    // Highlight the li when selected
+    $selectedLi = document.getElementById(self.currentPlace().id());
+    $selectedLi.classList.add('markerSelected');
   }
 
   // Types list for filter
