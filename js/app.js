@@ -259,6 +259,13 @@ function populateInfoWindow(marker, infowindow) {
      StreetViewPanoramaData object and a StreetViewStatus code denoting the status of the request */
   streetViewService.getPanoramaByLocation(marker.position, radius, getStreetView);
 
+  // Foursquare
+  var foursquareUrl = "https://api.foursquare.com/v2/venues/search?ll=" +
+   marker.position.lat() + "," + marker.position.lng() + "&client_id=O0T2TK0SJYKXMQRDW11MRSII4TB4GMKDPDJ0DEK2XC0YSVEW" +
+   "&client_secret=2E2LGIFQQVC4405T5M21CPVHCLB2A0V1MIYYKSVKVWUSIDFW&v=20161225";
+  console.log(foursquareUrl);
+
+
   infowindow.open(map, marker);
 } // End code for status = OK
 
