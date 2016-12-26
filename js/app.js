@@ -229,7 +229,34 @@ function populateInfoWindow(marker, infowindow) {
 
         // Set up the HTML for the infoWindow
         infowindow.setContent('<div><a href="' + marker.url + '"target="_new">' + marker.title
-          + '</a><div id="pano"></div></div>');
+          + '</a>' + '<div id="foursquareInfo"></div><div id="pano"></div></div>');
+
+        //Get data from Foursquare
+        var foursquareUrl = "https://api.foursquare.com/v2/venues/search?ll=" +
+          marker.position.lat() + "," + marker.position.lng() + "&client_id=O0T2TK0SJYKXMQRDW11MRSII4TB4GMKDPDJ0DEK2XC0YSVEW" +
+          "&client_secret=2E2LGIFQQVC4405T5M21CPVHCLB2A0V1MIYYKSVKVWUSIDFW&v=20161225";
+        console.log(foursquareUrl);
+
+        $.getJSON(foursquareUrl, function (data) {
+          var results = data.response.venues[0];
+          if (results != null) {
+            if (results.contact.formattedPhone) {
+            console.log(results.contact.formattedPhone);
+            $foursquareDiv = $('foursquareInfo');
+            var phone = results.contact.formattedPhone;
+            $('<p>', {
+              text: phone
+            }).appendTo($foursquareDiv);
+
+            } else {
+            console.log("No formatted phone found");
+            }
+          } else {
+            console.log("No venues found on FourSquare");
+          }
+        }).fail(function() {
+          console.log("Foursquare Data Could Not Be Loaded");
+        });
 
         // Get the street view panorama
         var panoramaOptions = {
@@ -258,13 +285,6 @@ function populateInfoWindow(marker, infowindow) {
      getPanoramaByLocation() will return a set of panorama data within a
      StreetViewPanoramaData object and a StreetViewStatus code denoting the status of the request */
   streetViewService.getPanoramaByLocation(marker.position, radius, getStreetView);
-
-  // Foursquare
-  var foursquareUrl = "https://api.foursquare.com/v2/venues/search?ll=" +
-   marker.position.lat() + "," + marker.position.lng() + "&client_id=O0T2TK0SJYKXMQRDW11MRSII4TB4GMKDPDJ0DEK2XC0YSVEW" +
-   "&client_secret=2E2LGIFQQVC4405T5M21CPVHCLB2A0V1MIYYKSVKVWUSIDFW&v=20161225";
-  console.log(foursquareUrl);
-
 
   infowindow.open(map, marker);
 } // End code for status = OK
