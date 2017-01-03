@@ -151,7 +151,8 @@ li:active {
 #foursquareInfo {
   height: 50px;
   color: black;
-  background-color: grey;
+  background-color: #D5D5E3);
+  margin: auto;
 }
 
 @media screen and (max-width: 400px) {
