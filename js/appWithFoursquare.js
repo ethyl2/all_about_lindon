@@ -210,20 +210,27 @@ function populateInfoWindow(marker, infowindow) {
       var results = data.response.venues[0];
       if (results != null) {
         if (results.contact.formattedPhone) {
-        var phone = results.contact.formattedPhone;
-        console.log(phone);
-        infowindow.setContent('<div><a href="' + marker.url + '"target="_new">' + marker.title
-          + '</a>' + '<div id="foursquareInfo">' + phone + '</div></div>');
+          var phone = results.contact.formattedPhone;
+          console.log(phone);
+          //infowindow.setContent('<div><a href="' + marker.url + '"target="_new">' + marker.title
+          //  + '</a><br>' + phone + '</div>');
         } else {
         console.log("No formatted phone found");
+        //infowindow.setContent('<div><a href="' + marker.url + '"target="_new">' + marker.title
+        //  + '</a><br>Foursquare Data could not be loaded. Try again later.</div>');
+        var phone = "No phone number found.";
         }
+        infowindow.setContent('<div><a href="' + marker.url + '"target="_new">' + marker.title
+          + '</a><br>' + phone + '</div>');
       } else {
         console.log("No venues found on FourSquare");
+        infowindow.setContent('<div><a href="' + marker.url + '"target="_new">' + marker.title
+          + '</a><br>Foursquare Data could not be loaded. Please try again later.</div>');
       }
     }).fail(function() {
       console.log("Foursquare Data Could Not Be Loaded");
       infowindow.setContent('<div><a href="' + marker.url + '"target="_new">' + marker.title
-        + '</a>' + '<div id="foursquareInfo">Foursquare Data could not be loaded. Try again later.</div></div>');
+        + '</a><br>Foursquare Data could not be loaded. Please try again later.</div>');
     });
   }
   infowindow.open(map, marker);
