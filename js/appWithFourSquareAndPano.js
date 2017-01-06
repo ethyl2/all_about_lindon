@@ -148,7 +148,7 @@ function initMap() {
     // Event listener for clicking on markers.
     var oldMarkerId = -1;
     marker.addListener('click', function() {
-      // First, maker sure that no lis from before are still highlighted
+      // First, make sure that no lis from before are still highlighted
       var $placeLis = document.getElementsByClassName('place');
       for (var i = 0; i < $placeLis.length; i++) {
         $placeLis[i].classList.remove('markerSelected');
@@ -166,6 +166,7 @@ function initMap() {
         this.setAnimation(google.maps.Animation.BOUNCE);
         this.setIcon(highlightedIcon);
         populateInfoWindow(this, placeInfowindow);
+        populatePanoDiv(this);
         // Remove the bouce from the previously selected marker
         if (oldMarkerId > -1) {
           markers[oldMarkerId].setAnimation(null);
@@ -192,6 +193,19 @@ function initMap() {
   map.fitBounds(bounds);
 
 }; // end initMap()
+
+function populatePanoDiv(marker) {
+  var panorama = new google.maps.StreetViewPanorama(
+      document.getElementById('pano'), {
+        position: {lat: marker.position.lat(), lng: marker.position.lng()},
+        pov: {
+          heading: 34,
+          pitch: 10
+       }
+      });
+
+  map.setStreetView(panorama);
+}; // end populatePanoDiv
 
 // Create content for InfoWindow
 function populateInfoWindow(marker, infowindow) {
