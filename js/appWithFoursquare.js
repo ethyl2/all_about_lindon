@@ -204,24 +204,51 @@ function populateInfoWindow(marker, infowindow) {
     var foursquareUrl = "https://api.foursquare.com/v2/venues/search?ll=" +
       marker.position.lat() + "," + marker.position.lng() + "&client_id=O0T2TK0SJYKXMQRDW11MRSII4TB4GMKDPDJ0DEK2XC0YSVEW" +
       "&client_secret=2E2LGIFQQVC4405T5M21CPVHCLB2A0V1MIYYKSVKVWUSIDFW&v=20161225";
-    console.log(foursquareUrl);
 
     $.getJSON(foursquareUrl, function (data) {
       var results = data.response.venues[0];
       if (results != null) {
+        // Category
+        if (results.categories[0].name) {
+          var categoryName = results.categories[0].shortName;
+        } else {
+          var categoryName = "No category could be found";
+        }
+
+        // Phone
         if (results.contact.formattedPhone) {
           var phone = results.contact.formattedPhone;
-          console.log(phone);
-          //infowindow.setContent('<div><a href="' + marker.url + '"target="_new">' + marker.title
-          //  + '</a><br>' + phone + '</div>');
         } else {
-        console.log("No formatted phone found");
-        //infowindow.setContent('<div><a href="' + marker.url + '"target="_new">' + marker.title
-        //  + '</a><br>Foursquare Data could not be loaded. Try again later.</div>');
         var phone = "No phone number found.";
         }
-        infowindow.setContent('<div><a href="' + marker.url + '"target="_new">' + marker.title
-          + '</a><br>' + phone + '</div>');
+
+        // Address
+        if (results.location.formattedAddress) {
+          var address = results.location.formattedAddress;
+        } else {
+          var address = "No address found.";
+        }
+
+        // Latitude
+        if (results.location.lat) {
+          var foursquareLat = results.location.lat;
+        } else {
+          var foursquareLat = 'No latitude found.';
+        }
+
+        // Longitude
+        if (results.location.lat) {
+          var foursquareLng = results.location.lng;
+        } else {
+          var foursquareLng = 'No longitude found.';
+        }
+
+        // Put all of the foursquare data in the infoWindow
+        infowindow.setContent('<div><a href="' + marker.url + '"target="_new">'
+          + marker.title + '</a><br>' + categoryName + ' ' + marker.type
+          + '<br>' + phone + '<br>' + address + '<br>Lat: ' + foursquareLat
+          + '<br>Lng: ' + foursquareLng +'</div>');
+
       } else {
         console.log("No venues found on FourSquare");
         infowindow.setContent('<div><a href="' + marker.url + '"target="_new">' + marker.title
