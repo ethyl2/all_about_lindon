@@ -60,7 +60,7 @@ var locations = [
     url: 'http://tacoscdmx.com/', type: 'restaurant'}
 ];
 
-// Sort the locations into alphetical order
+// Sort the locations into alphabetical order
 locations.sort(function (left, right) {
  return left.title == right.title ? 0 : (left.title < right.title ? -1 : 1)
   });
@@ -148,7 +148,7 @@ function initMap() {
     // Event listener for clicking on markers.
     var oldMarkerId = -1;
     marker.addListener('click', function() {
-      // First, maker sure that no lis from before are still highlighted
+      // First, make sure that no lis from before are still highlighted
       var $placeLis = document.getElementsByClassName('place');
       for (var i = 0; i < $placeLis.length; i++) {
         $placeLis[i].classList.remove('markerSelected');
@@ -166,6 +166,7 @@ function initMap() {
         this.setAnimation(google.maps.Animation.BOUNCE);
         this.setIcon(highlightedIcon);
         populateInfoWindow(this, placeInfowindow);
+        populatePanoDiv(this);
         // Remove the bouce from the previously selected marker
         if (oldMarkerId > -1) {
           markers[oldMarkerId].setAnimation(null);
@@ -193,103 +194,133 @@ function initMap() {
 
 }; // end initMap()
 
+// Display corresponding pano image when a given marker is clicked
+function populatePanoDiv(marker) {
+  //This code is modified from Udacity example code from https://github.com/udacity/ud864
+  // Instantiate an instance of the StreetViewService.
+  var streetViewService = new google.maps.StreetViewService();
+  var radius = 50;
+
+  // Here is the callback function to execute upon retrieval of a result
+  // from the Street View service.
+  // If status of OK is received, add pano image div
+  function getStreetView(data, status) {
+    if (status == google.maps.StreetViewStatus.OK){
+      var nearStreetViewLocation = data.location.latLng;
+      // geometry api calculates the heading.
+
+      /* More about computeHeading from the documention found
+      at https://developers.google.com/maps/documentation/javascript/geometry.
+      When navigating on a sphere, a heading is the angle of a direction
+      from a fixed reference point, usually true north. Within the Google Maps API,
+      a heading is defined in degrees from true north, where headings are measured
+      clockwise from true north (0 degrees). You may compute this heading between
+      two locations with the computeHeading() method, passing it two from
+      and to LatLng objects. Here the 2 locations are the latlng
+      returned from the call to getPanoramaByLocation() and the marker's latlng.
+      */
+
+      var heading = google.maps.geometry.spherical.computeHeading(
+        nearStreetViewLocation, marker.position);
+
+      // Get the street view panorama
+      var panoramaOptions = {
+          position: nearStreetViewLocation,
+          pov: {
+            heading: heading,
+            pitch: 30
+          }
+        };
+
+      // To display a StreetViewPanorama within a separate DOM element,
+      // in this case, the <div> element with id='pano,'
+      // pass the DOM element within the StreetViewPanorama's constructor.
+      var panorama = new google.maps.StreetViewPanorama(
+        document.getElementById('pano'), panoramaOptions);
+
+      // If street view status is not okay, display error message.
+      } else {
+        var panoDiv = document.getElementById('pano');
+        panoDiv.innerHTML = '<img src="img/no_street_view.png">';
+        console.log("No street view found");
+      }
+    }
+
+    /* Here is the call to getPanoramaByLocation() with getStreetView as its callback function.
+       getPanoramaByLocation() will return a set of panorama data within a
+       StreetViewPanoramaData object and a StreetViewStatus code denoting the status of the request */
+    streetViewService.getPanoramaByLocation(marker.position, radius, getStreetView);
+
+} // end of oldPopulatePanoDiv
+
 // Create content for InfoWindow
-// This code is modified from Udacity example code from https://github.com/udacity/ud864
 function populateInfoWindow(marker, infowindow) {
   // Check to make sure the infowindow is not already opened on this marker.
   if (infowindow.marker != marker) {
     infowindow.setContent('');
     infowindow.marker = marker;
 
-    // Instantiate an instance of the StreetViewService
-    var streetViewService = new google.maps.StreetViewService();
-    var radius = 50;
+    //Get data from Foursquare
+    var foursquareUrl = "https://api.foursquare.com/v2/venues/search?ll=" +
+      marker.position.lat() + "," + marker.position.lng() + "&client_id=O0T2TK0SJYKXMQRDW11MRSII4TB4GMKDPDJ0DEK2XC0YSVEW" +
+      "&client_secret=2E2LGIFQQVC4405T5M21CPVHCLB2A0V1MIYYKSVKVWUSIDFW&v=20161225";
 
-    // Here is the callback function to execute upon retrieval of a result
-    // from the Street View service.
-    // If status of OK is received, add pano image to infoWindow
-    function getStreetView(data, status) {
-      if (status == google.maps.StreetViewStatus.OK){
-        var nearStreetViewLocation = data.location.latLng;
-        // geometry api calculates the heading.
+    $.getJSON(foursquareUrl, function (data) {
+      var results = data.response.venues[0];
+      if (results != null) {
+        // Category
+        if (results.categories[0].name) {
+          var categoryName = results.categories[0].shortName;
+        } else {
+          var categoryName = "No category could be found";
+        }
 
-        /* More about computeHeading from the documention found
-        at https://developers.google.com/maps/documentation/javascript/geometry.
-        When navigating on a sphere, a heading is the angle of a direction
-        from a fixed reference point, usually true north. Within the Google Maps API,
-        a heading is defined in degrees from true north, where headings are measured
-        clockwise from true north (0 degrees). You may compute this heading between
-        two locations with the computeHeading() method, passing it two from
-        and to LatLng objects. Here the 2 locations are the latlng
-        returned from the call to getPanoramaByLocation() and the marker's latlng.
-        */
+        // Phone
+        if (results.contact.formattedPhone) {
+          var phone = results.contact.formattedPhone;
+        } else {
+        var phone = "No phone number found.";
+        }
 
-        var heading = google.maps.geometry.spherical.computeHeading(
-          nearStreetViewLocation, marker.position);
+        // Address
+        if (results.location.formattedAddress) {
+          var address = results.location.formattedAddress;
+        } else {
+          var address = "No address found.";
+        }
 
-        // Set up the HTML for the infoWindow
-        //infowindow.setContent('<div><a href="' + marker.url + '"target="_new">' + marker.title
-        //  + '</a>' + '<div id="foursquareInfo"></div><div id="pano"></div></div>');
+        // Latitude
+        if (results.location.lat) {
+          var foursquareLat = results.location.lat;
+        } else {
+          var foursquareLat = 'No latitude found.';
+        }
 
-        //Get data from Foursquare
-        var foursquareUrl = "https://api.foursquare.com/v2/venues/search?ll=" +
-          marker.position.lat() + "," + marker.position.lng() + "&client_id=O0T2TK0SJYKXMQRDW11MRSII4TB4GMKDPDJ0DEK2XC0YSVEW" +
-          "&client_secret=2E2LGIFQQVC4405T5M21CPVHCLB2A0V1MIYYKSVKVWUSIDFW&v=20161225";
-        console.log(foursquareUrl);
+        // Longitude
+        if (results.location.lat) {
+          var foursquareLng = results.location.lng;
+        } else {
+          var foursquareLng = 'No longitude found.';
+        }
 
-        $.getJSON(foursquareUrl, function (data) {
-          var results = data.response.venues[0];
-          if (results != null) {
-            if (results.contact.formattedPhone) {
-            //$foursquareDiv = $('foursquareInfo');
-            var phone = results.contact.formattedPhone;
-            console.log(phone);
-            //$('<p>', {
-            //  text: phone
-            //}).appendTo($foursquareDiv);
-            infowindow.setContent('<div><a href="' + marker.url + '"target="_new">' + marker.title
-              + '</a>' + '<div id="foursquareInfo">' + phone + '</div><div id="pano"></div></div>');
+        // Put all of the foursquare data in the infoWindow
+        infowindow.setContent('<div><a href="' + marker.url + '"target="_new">'
+          + marker.title + '</a><br>' + categoryName + ' ' + marker.type
+          + '<br>' + phone + '<br>' + address + '<br>Lat: ' + foursquareLat
+          + '<br>Lng: ' + foursquareLng +'</div>');
 
-            } else {
-            console.log("No formatted phone found");
-            }
-          } else {
-            console.log("No venues found on FourSquare");
-          }
-        }).fail(function() {
-          console.log("Foursquare Data Could Not Be Loaded");
-        });
-
-        // Get the street view panorama
-        var panoramaOptions = {
-            position: nearStreetViewLocation,
-            pov: {
-              heading: heading,
-              pitch: 30
-            }
-          };
-
-        // To display a StreetViewPanorama within a separate DOM element,
-        // in this case, the <div> element with id='pano,'
-        // pass the DOM element within the StreetViewPanorama's constructor.
-        var panorama = new google.maps.StreetViewPanorama(
-          document.getElementById('pano'), panoramaOptions);
-
-      // If street view status is not okay, set up HTML without pano div and with
-      // error message
       } else {
+        console.log("No venues found on FourSquare");
         infowindow.setContent('<div><a href="' + marker.url + '"target="_new">' + marker.title
-          + '</a><div>' + '<div>No Street View Found</div>');
+          + '</a><br>Foursquare Data could not be loaded. Please try again later.</div>');
       }
-    }
-
-  /* Here is the call to getPanoramaByLocation() with getStreetView as its callback function.
-     getPanoramaByLocation() will return a set of panorama data within a
-     StreetViewPanoramaData object and a StreetViewStatus code denoting the status of the request */
-  streetViewService.getPanoramaByLocation(marker.position, radius, getStreetView);
-
+    }).fail(function() {
+      console.log("Foursquare Data Could Not Be Loaded");
+      infowindow.setContent('<div><a href="' + marker.url + '"target="_new">' + marker.title
+        + '</a><br>Foursquare Data could not be loaded. Please try again later.</div>');
+    });
+  }
   infowindow.open(map, marker);
-} // End code for status = OK
 
   // Make sure the marker property is cleared and marker has default behavior
   // if the infowindow is closed.
@@ -351,6 +382,7 @@ var viewModel = function() {
     self.currentMarker().setIcon(highlightedIcon);
     self.currentMarker().setAnimation(google.maps.Animation.BOUNCE);
     populateInfoWindow(self.currentMarker(), placeInfowindow);
+    populatePanoDiv(self.currentMarker());
 
     // Highlight the li when selected
     $selectedLi = document.getElementById(self.currentPlace().id());
