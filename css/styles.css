@@ -150,6 +150,12 @@ li:active {
   right: 0px;
   top: 45px;
   border: 2px solid #015249;
+  object-fit: contain;
+}
+
+#pano img {
+  height: 100%;
+  width: 100%;
 }
 
 #foursquareInfo {
