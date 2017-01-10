@@ -135,20 +135,9 @@ li:active {
   background-color: #A5A5AF;
 }
 
-#map {
-  bottom:0px;
-  height: 100%;
-  left: 25%; /*362px*/
-  position: absolute;
-  right: 0px;
-}
-
 #pano {
   width: 200px;
   height: 210px;
-  position: absolute;
-  right: 0px;
-  top: 45px;
   border: 2px solid #015249;
   object-fit: contain;
 }
@@ -166,12 +155,7 @@ li:active {
 }
 
 @media screen and (max-width: 400px) {
-  .options-box {
-    transform: translate(-300px, 0);
-    transition: transform 0.3x ease;
-  }
-
-  #map {
-    left: 0px;
+  #pano {
+    top: 60%;
   }
 }

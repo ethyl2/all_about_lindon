@@ -447,6 +447,6 @@ var viewModel = function() {
 ko.applyBindings(new viewModel());
 
 function hideList() {
-    console.log("Time to hide the list");
-    //TODO: Add functionality and toggle ability
+    $('.options-box').toggle();
+    console.log("Time to toggle options-box");
 }

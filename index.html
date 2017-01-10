@@ -5,43 +5,76 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>All About Lindon, UT</title>
     <link href="https://fonts.googleapis.com/css?family=Lora|Open+Sans" rel="stylesheet">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
     <link href="css/styles.css" rel="stylesheet">
     <!-- Favicon is from http://www.freefavicon.com/freefavicons/objects/iconinfo/lattice-optic-illusion-152-204321.html-->
     <link rel="icon" type="image/png" href="img/lattice.png">
   </head>
   <body>
     <div class="container">
-      <div class="title">
-        <h1 id="hamburger" onclick="hideList()">&#9776;</h1>
-        <h1>Discover Lindon, UT</h1>
+      <div class="row title">
+        <div class="col-md-1">
+          <h1 id="hamburger" onclick="hideList()">&#9776;</h1>
+        </div>
+        <div class="col-md-11">
+          <h1>Discover Lindon, UT</h1>
+        </div>
       </div>
-      <div class="options-box">
-        <a href="https://en.wikipedia.org/wiki/Lindon,_Utah" target="_blank">
-          <img id="city_logo" src="img/lindon_city_logo_with_transparency.png" alt="Lindon City Logo"></a>
 
-        <div class="dropdown">
-          <button class="dropbtn">Filter Places</button>
-          <div class="dropdown-content">
-            <ul id="types_list" data-bind="foreach: typesList">
-              <li><span data-bind="text: title, click: $parent.filterPlaces"</span></li>
-            </ul>
+      <div class = "row">
+
+        <div class="col-md-3 options-box">
+          <div class="row">
+            <div class="col-md-12">
+              <a href="https://en.wikipedia.org/wiki/Lindon,_Utah" target="_blank">
+              <img id="city_logo" src="img/lindon_city_logo_with_transparency.png" alt="Lindon City Logo"></a>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12 dropdown">
+              <button class="dropbtn">Filter Places</button>
+              <div class="dropdown-content">
+                <ul id="types_list" data-bind="foreach: typesList">
+                  <li><span data-bind="text: title, click: $parent.filterPlaces"</span></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <ol id="places_list" data-bind="foreach: placesList">
+                <li class="place" data-bind="attr: {id: id}"><span data-bind="text: title, click: $parent.setCurrentPlace"></span></li>
+              </ol>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12 reset">
+              <button class="showAll" data-bind="click: showAllPlaces">Show All</button>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="col-md-9">
+          <div class="row">
+            <div class="col-md-12" id="map">
+            </div>
           </div>
         </div>
-
-        <ol id="places_list" data-bind="foreach: placesList">
-              <li class="place" data-bind="attr: {id: id}"><span data-bind="text: title, click: $parent.setCurrentPlace"></span></li>
-        </ol>
-
-        <div class="reset">
-          <button class="showAll" data-bind="click: showAllPlaces">Show All</button>
-        </div>
-
       </div>
-      <div id="map"></div>
-      <div id="pano"></div>
+
+      <div class="row">
+        <div class="col-md-12" id="pano">
+        </div>
+      </div>
+
     </div>
     <script src="js/lib/knockout-3.2.0.js"></script>
     <script src="js/lib/jquery.min.js"></script>
+    <script type="text/javascript" src="js/lib/bootstrap.min.js"></script>
     <script src="js/app.js"></script>
     <script async defer
         src="https://maps.googleapis.com/maps/api/js?libraries=places,geometry,drawing&key=AIzaSyAcH0ibachO1LuFP-YK5APi23oMNabjykc&v=3&callback=initMap">
