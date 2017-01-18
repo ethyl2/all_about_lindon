@@ -151,7 +151,7 @@ li:active {
   height: 210px;
   position: absolute;
   right: 0px;
-  top: 45px;
+  top: 11%;
   border: 2px solid #015249;
   object-fit: contain;
 }
@@ -183,6 +183,10 @@ li:active {
 
   ol {
     padding-left: 1.5em;
+  }
+
+  #pano {
+    top: 50%;
   }
 
 }
