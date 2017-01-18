@@ -14,7 +14,7 @@ body {
   z-index: 1;
   position: absolute;
   width: 100%;
-  height: 15%;
+  height: 11%;
   margin: auto;
   color: #57BC90;
   background-color: white;
@@ -45,8 +45,8 @@ body {
   background: linear-gradient(#77C9D4, #57BC90);
   color: #FFF;
   height: 100%;
-  line-height: 35px;
-  padding: 10px 10px 30px 10px;
+  line-height: 1.75em;
+  font-size: 1em;
   text-align: center;
   width: 25%;
   overflow: scroll;
@@ -55,11 +55,11 @@ body {
   transition: width .5s;
 }
 
-
 #city_logo {
   width: 50%;
   display: block;
   margin: 3em auto auto auto;
+  padding-top: 1em;
 }
 
 /* Dropdown Button -- Code modified from http://www.w3schools.com/howto/howto_css_dropdown.asp*/
@@ -172,7 +172,17 @@ li:active {
   #title {
     height: 5%;
   }
+
   #title h1 {
     font-size: 1em;
   }
+
+  #options-box {
+    font-size: 0.5em;
+  }
+
+  ol {
+    padding-left: 1.5em;
+  }
+
 }
