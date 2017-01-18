@@ -446,7 +446,18 @@ var viewModel = function() {
 
 ko.applyBindings(new viewModel());
 
-function hideList() {
-    $('.options-box').toggle();
-    console.log("Time to toggle options-box");
+// To toggle the options-box display for better responsiveness
+var showList = false;
+function toggleList() {
+  var $map = document.getElementById("map");
+  if (showList == false) {
+    document.getElementById("options-box").style.width = "0";
+    $map.style.left = "0%";
+    $map.style.width = "100%";
+    showList = true;
+  } else {
+    document.getElementById("options-box").style.width = "25%";
+    $map.style.left = "25%";
+    showList = false;
+  }
 }

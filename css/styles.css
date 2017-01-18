@@ -9,12 +9,12 @@ body {
   background-color: #57BC90;
 }
 
-.title {
+#title {
   font-family: 'Lora', serif;
   z-index: 1;
   position: absolute;
   width: 100%;
-  height: 50px;
+  height: 11%;
   margin: auto;
   color: #57BC90;
   background-color: white;
@@ -22,10 +22,10 @@ body {
   text-align: center;
 }
 
-.title h1 {
-  display: inline-block;
+#title h1 {
   text-align: center;
   margin: 0.25em auto;
+  font-size: 2em;
 }
 
 #hamburger {
@@ -38,27 +38,28 @@ body {
   position: relative;
 }
 
-.options-box {
+#options-box {
   background-color: #77C9D4;
   background-image: linear-gradient(#77C9D4, #57BC90);
   background: #77C9D4;
   background: linear-gradient(#77C9D4, #57BC90);
   color: #FFF;
   height: 100%;
-  line-height: 35px;
-  padding: 10px 10px 30px 10px;
+  line-height: 1.75em;
+  font-size: 1em;
   text-align: center;
   width: 25%;
   overflow: scroll;
   bottom: 0px;
-  z-index: 0;
+  z-index: 1;
+  transition: width .5s;
 }
-
 
 #city_logo {
   width: 50%;
   display: block;
   margin: 3em auto auto auto;
+  padding-top: 1em;
 }
 
 /* Dropdown Button -- Code modified from http://www.w3schools.com/howto/howto_css_dropdown.asp*/
@@ -135,9 +136,22 @@ li:active {
   background-color: #A5A5AF;
 }
 
+#map {
+  bottom:0px;
+  height: 100%;
+  left: 25%;
+  position: absolute;
+  right: 0px;
+  z-index: 0;
+  transition: left 0.5s;
+}
+
 #pano {
   width: 200px;
   height: 210px;
+  position: absolute;
+  right: 0px;
+  top: 11%;
   border: 2px solid #015249;
   object-fit: contain;
 }
@@ -155,7 +169,28 @@ li:active {
 }
 
 @media screen and (max-width: 400px) {
+
+  #map {
+    left: 0px;
+  }
+
+  #title {
+    height: 5%;
+  }
+
+  #title h1 {
+    font-size: 1em;
+  }
+
+  #options-box {
+    font-size: 0.5em;
+  }
+
+  ol {
+    padding-left: 1.5em;
+  }
+
   #pano {
-    top: 60%;
+    top: 50%;
   }
 }
