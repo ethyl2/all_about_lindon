@@ -12,7 +12,7 @@ body {
 
 
 /* Header */
-#title {
+header {
   font-family: "Lora", serif;
   z-index: 1;
   position: absolute;
@@ -26,7 +26,7 @@ body {
 }
 
 
-#title h1 {
+header h1 {
   text-align: center;
   margin: 0.25em auto;
   font-size: 2em;
@@ -198,12 +198,12 @@ li:active {
 
 /* Media Queries */
 @media screen and (max-width: 400px) {
-  #title {
+  header {
     height: 5%;
   }
 
 
-  #title h1 {
+  header h1 {
     font-size: 1em;
   }
 
