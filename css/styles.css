@@ -8,6 +8,7 @@ body {
   margin: 0;
   padding: 0;
   background-color: #57bc90;
+  position: relative;
 }
 
 
@@ -36,13 +37,6 @@ header h1 {
 #hamburger {
   display: inline-block;
   float: left;
-}
-
-
-/* Main */
-.container {
-  height: 100%;
-  position: relative;
 }
 
 
