@@ -268,40 +268,13 @@ function populateInfoWindow(marker, infowindow) {
     $.getJSON(foursquareUrl, function (data) {
       var results = data.response.venues[0];
       if (results != null) {
-        // Category
-        if (results.categories[0].name) {
-          var categoryName = results.categories[0].shortName;
-        } else {
-          var categoryName = "No category could be found";
-        }
+        var categoryName, phone, address, foursquareLat, foursquareLng;
 
-        // Phone
-        if (results.contact.formattedPhone) {
-          var phone = results.contact.formattedPhone;
-        } else {
-        var phone = "No phone number found.";
-        }
-
-        // Address
-        if (results.location.formattedAddress) {
-          var address = results.location.formattedAddress;
-        } else {
-          var address = "No address found.";
-        }
-
-        // Latitude
-        if (results.location.lat) {
-          var foursquareLat = results.location.lat;
-        } else {
-          var foursquareLat = 'No latitude found.';
-        }
-
-        // Longitude
-        if (results.location.lat) {
-          var foursquareLng = results.location.lng;
-        } else {
-          var foursquareLng = 'No longitude found.';
-        }
+        results.categories[0].name ? categoryName = results.categories[0].shortName : categoryName = "No category could be found";
+        results.contact.formattedPhone ? phone = results.contact.formattedPhone : phone = "No phone number found.";
+        results.location.formattedAddress ? address = results.location.formattedAddress : address = "No address found.";
+        results.location.lat ? foursquareLat = results.location.lat : foursquareLat = 'No latitude found.';
+        results.location.lng ? foursquareLng = results.location.lng : foursquareLng = 'No longitude found.';
 
         // Put all of the foursquare data in the infoWindow
         infowindow.setContent('<div><a href="' + marker.url + '"target="_new">'
