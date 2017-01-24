@@ -194,6 +194,12 @@ function initMap() {
   // Extend the bounds of the map to include all of the markers
   map.fitBounds(bounds);
 
+  // Make map display responsively
+  // to make sure map markers always fit on screen as user resizes their browser window
+  google.maps.event.addDomListener(window, 'resize', function() {
+  map.fitBounds(bounds); // `bounds` is a `LatLngBounds` object
+  });
+
 }; // end initMap()
 
 // Display corresponding pano image when a given marker is clicked
