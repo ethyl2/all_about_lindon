@@ -161,13 +161,15 @@ function initMap() {
           var $selectedLi = document.getElementById(this.id);
           $selectedLi.classList.remove('markerSelected');
       } else {
+        // First, center map on the marker.
+        map.panTo(this.getPosition());
         // Trigger bounce, highlighted marker color, and infoWindow display
         //  if the marker was not moving.
         this.setAnimation(google.maps.Animation.BOUNCE);
         this.setIcon(highlightedIcon);
         populateInfoWindow(this, placeInfowindow);
         populatePanoDiv(this);
-        // Remove the bouce from the previously selected marker
+        // Remove the bounce from the previously selected marker
         if (oldMarkerId > -1) {
           markers[oldMarkerId].setAnimation(null);
         }
@@ -233,7 +235,7 @@ function populatePanoDiv(marker) {
         };
 
       // To display a StreetViewPanorama within a separate DOM element,
-      // in this case, the <div> element with id='pano,'
+      // in this case, the <div> element with id='pano',
       // pass the DOM element within the StreetViewPanorama's constructor.
       var panorama = new google.maps.StreetViewPanorama(
         document.getElementById('pano'), panoramaOptions);
