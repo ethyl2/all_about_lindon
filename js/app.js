@@ -355,6 +355,7 @@ var viewModel = function() {
     self.currentMarker().setAnimation(google.maps.Animation.BOUNCE);
     populateInfoWindow(self.currentMarker(), placeInfowindow);
     populatePanoDiv(self.currentMarker());
+    map.panTo(self.currentMarker().getPosition());
 
     // Highlight the li when selected
     $selectedLi = document.getElementById(self.currentPlace().id);
