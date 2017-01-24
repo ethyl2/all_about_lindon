@@ -251,7 +251,7 @@ function populatePanoDiv(marker) {
        StreetViewPanoramaData object and a StreetViewStatus code denoting the status of the request */
     streetViewService.getPanoramaByLocation(marker.position, radius, getStreetView);
 
-} // end of oldPopulatePanoDiv
+} // end of PopulatePanoDiv
 
 // Create content for InfoWindow
 function populateInfoWindow(marker, infowindow) {
@@ -333,11 +333,10 @@ function populateInfoWindow(marker, infowindow) {
 
 // Place object constructor
 var Place = function(data) {
-  this.title = ko.observable(data.title);
-  this.location = ko.observable(data.location);
-  this.url = ko.observable(data.url);
-  this.type = ko.observable(data.type);
-  this.id = ko.observable();
+  this.title = data.title;
+  this.location = data.location;
+  this.url = data.url;
+  this.type = data.type;
 };
 
 var viewModel = function() {
@@ -348,15 +347,15 @@ var viewModel = function() {
   self.placesList = ko.observableArray([]);
   for (var i = 0; i < locations.length; i++) {
     self.placesList.push(new Place(locations[i]));
-    self.placesList()[i].id(i);
+    self.placesList()[i].id = i;
   }
+
   // Put places in alphabetical order according to title
   self.placesList.sort(function (left, right) {
-    return left.title() == right.title() ? 0 : (left.title() < right.title() ? -1 : 1) });
+    return left.title == right.title ? 0 : (left.title < right.title ? -1 : 1) });
 
   // self.currentPlace and self.currentMarker for self.placesList click event
   self.currentPlace = ko.observable(this.placesList()[0]);
-  console.log(self.currentPlace().title());
   self.currentMarker = ko.observable();
 
   // Click event highlights and bounces the corresponding marker and displays its
@@ -370,22 +369,20 @@ var viewModel = function() {
       self.currentMarker().setAnimation(null);
 
       // Also, remove the highlighted style of the previously selected li
-      var $selectedLi = document.getElementById(self.currentPlace().id());
+      var $selectedLi = document.getElementById(self.currentPlace().id);
       $selectedLi.classList.remove('markerSelected');
-      console.log("Removed 'markerSelected' class");
     }
 
     // Ready to display the new selection
     self.currentPlace(place);
-    console.log("currentPlace is " + self.currentPlace().title() + ".");
-    self.currentMarker(markers[self.currentPlace().id()]);
+    self.currentMarker(markers[self.currentPlace().id]);
     self.currentMarker().setIcon(highlightedIcon);
     self.currentMarker().setAnimation(google.maps.Animation.BOUNCE);
     populateInfoWindow(self.currentMarker(), placeInfowindow);
     populatePanoDiv(self.currentMarker());
 
     // Highlight the li when selected
-    $selectedLi = document.getElementById(self.currentPlace().id());
+    $selectedLi = document.getElementById(self.currentPlace().id);
     $selectedLi.classList.add('markerSelected');
   }
 
@@ -402,7 +399,7 @@ var viewModel = function() {
     // Remove all values whose type property is the selected place type,
     // and return them as self.removedPlaces.
     self.removedPlaces(self.placesList.remove(function (item) {
-      return item.type() != placeType.keyword;
+      return item.type != placeType.keyword;
     }));
 
     // Highlight the markers whose places are the placeType, and remove the rest
@@ -427,7 +424,7 @@ var viewModel = function() {
 
     // Put places back in alphabetical order in self.placesList according to title
     self.placesList.sort(function (left, right) {
-      return left.title() == right.title() ? 0 : (left.title() < right.title() ? -1 : 1)
+      return left.title == right.title ? 0 : (left.title < right.title ? -1 : 1)
     });
 
     // Empty the self.removedPlaces so they won't be added again by accident.
