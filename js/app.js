@@ -440,3 +440,11 @@ function toggleList() {
     showList = false;
   }
 }
+
+//Error handler for Google Maps API
+function errorhandler() {
+  console.log("Google Maps API is not loading. Try again later.");
+  var $map = document.getElementById('map');
+  $map.innerHTML = "<h1 style='margin: 5em'> Google Maps API is not loading." +
+    "Please try again later.</h1>";
+}
