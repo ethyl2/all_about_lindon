@@ -421,6 +421,19 @@ var viewModel = function() {
     }
   };
 
+  // Toggle nav display for better responsiveness
+  self.showList = ko.observable(true);
+  self.clickMe = function() {
+    self.showList(!self.showList());
+    var $map = document.getElementById("map");
+    if (!self.showList()) {
+      $map.style.left = "0%";
+      $map.style.width = "100%";
+    } else {
+      $map.style.left = "25%";
+    }
+  }
+
 }; //end of ViewModel
 
 ko.applyBindings(new viewModel());
@@ -443,7 +456,6 @@ function toggleList() {
 
 //Error handler for Google Maps API
 function errorhandler() {
-  console.log("Google Maps API is not loading. Try again later.");
   var $map = document.getElementById('map');
   $map.innerHTML = "<h1 style='margin: 5em'> Google Maps API is not loading." +
     "Please try again later.</h1>";
