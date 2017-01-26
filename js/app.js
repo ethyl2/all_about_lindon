@@ -438,22 +438,6 @@ var viewModel = function() {
 
 ko.applyBindings(new viewModel());
 
-// To toggle the nav display for better responsiveness
-var showList = false;
-function toggleList() {
-  var $map = document.getElementById("map");
-  if (showList == false) {
-    document.getElementsByTagName("nav")[0].style.width = "0";
-    $map.style.left = "0%";
-    $map.style.width = "100%";
-    showList = true;
-  } else {
-    document.getElementsByTagName("nav")[0].style.width = "25%";
-    $map.style.left = "25%";
-    showList = false;
-  }
-}
-
 //Error handler for Google Maps API
 function errorhandler() {
   var $map = document.getElementById('map');
