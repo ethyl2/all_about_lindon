@@ -12,11 +12,11 @@
 
   <body>
     <header>
-      <h1 id="hamburger" onclick="toggleList()">&#9776;</h1>
+      <h1 id="hamburger" data-bind="click: clickMe">&#9776;</h1>
       <h1>Discover Lindon, UT</h1>
     </header>
 
-    <nav>
+    <nav data-bind="visible: showList">
       <a href="https://en.wikipedia.org/wiki/Lindon,_Utah" target="_blank">
         <img id="city_logo" src="img/lindon_city_logo_with_transparency.png" alt="Lindon City Logo"></a>
 
