@@ -329,6 +329,7 @@ var viewModel = function() {
   for (var i = 0; i < locations.length; i++) {
     self.placesList.push(new Place(locations[i]));
     self.placesList()[i].id = i;
+    self.placesList()[i].selected = ko.observable(false);
   }
 
   // Put places in alphabetical order according to title
@@ -352,20 +353,18 @@ var viewModel = function() {
       // Also, remove the highlighted style of the previously selected li
       var $selectedLi = document.getElementById(self.currentPlace().id);
       $selectedLi.classList.remove('markerSelected');
+      self.currentPlace().selected(false);
     }
 
     // Ready to display the new selection
     self.currentPlace(place);
+    self.currentPlace().selected(true); //highlights the li because of css binding
     self.currentMarker(markers[self.currentPlace().id]);
     self.currentMarker().setIcon(highlightedIcon);
     self.currentMarker().setAnimation(google.maps.Animation.BOUNCE);
     populateInfoWindow(self.currentMarker(), placeInfowindow);
     populatePanoDiv(self.currentMarker());
     map.panTo(self.currentMarker().getPosition());
-
-    // Highlight the li when selected
-    $selectedLi = document.getElementById(self.currentPlace().id);
-    $selectedLi.classList.add('markerSelected');
   }
 
   // Types list for filter

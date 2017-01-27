@@ -30,7 +30,7 @@
       </div>
 
       <ol id="places_list" data-bind="foreach: placesList">
-        <li class="place" data-bind="attr: {id: id}"><span data-bind="text: title, click: $parent.setCurrentPlace"></span></li>
+        <li class="place" data-bind="attr: {id: id}, css: {markerSelected : selected}"><span data-bind="text: title, click: $parent.setCurrentPlace"></span></li>
       </ol>
 
       <div class="reset">
