@@ -140,6 +140,10 @@ li:active {
   -webkit-transform: translate(0px, 5px);
 }
 
+#foursquare-img {
+  width: 99%;
+}
+
 /* Map */
 .markerSelected {
   color: #015249;
