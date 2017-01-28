@@ -30,8 +30,14 @@
       </div>
 
       <ol id="places_list" data-bind="foreach: placesList">
-        <li class="place" data-bind="attr: {id: id}, css: {markerSelected : selected}"><span data-bind="text: title, click: $parent.setCurrentPlace"></span></li>
+        <li class="place" data-bind="{attr: {id: id}, css: {markerSelected : selected}}">
+          <span data-bind="text: title, click: $parent.setCurrentPlace"></span>
+        </li>
       </ol>
+
+      <a href="https://foursquare.com/explore?mode=url&near=84042%2C%20UT&nearGeoId=162411061578949242"
+        target="_blank"><img id="foursquare-img" src="img/foursquare.png" alt="Foursquare Attribution Logo">
+      </a>
 
     </nav>
 
