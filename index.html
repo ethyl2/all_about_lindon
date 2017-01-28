@@ -21,7 +21,7 @@
         <img id="city_logo" src="img/lindon_city_logo_with_transparency.png" alt="Lindon City Logo"></a>
 
       <div class="dropdown">
-        <button data-bind="click: toggleFilter" class="dropbtn">Filter Places</button>
+        <button data-bind="{click: toggleFilter, text: buttonText}" class="dropbtn"></button>
         <div data-bind="visible: filterVisible" class="dropdown-content">
           <ul id="types_list" data-bind="foreach: typesList">
             <li><span data-bind="text: title, click: $parent.filterPlaces"</span></li>
@@ -33,9 +33,6 @@
         <li class="place" data-bind="attr: {id: id}, css: {markerSelected : selected}"><span data-bind="text: title, click: $parent.setCurrentPlace"></span></li>
       </ol>
 
-      <div class="reset">
-        <button class="showAll" data-bind="click: showAllPlaces">Show All</button>
-      </div>
     </nav>
 
     <main>

@@ -250,7 +250,6 @@ function populatePanoDiv(marker) {
       } else {
         var panoDiv = document.getElementById('pano');
         panoDiv.innerHTML = '<img src="img/no_street_view.png">';
-        console.log("No street view found");
       }
     }
 
@@ -291,12 +290,10 @@ function populateInfoWindow(marker, infowindow) {
           + '<br>Lng: ' + foursquareLng +'</div>');
 
       } else {
-        console.log("No venues found on FourSquare");
         infowindow.setContent('<div><a href="' + marker.url + '"target="_new">' + marker.title
           + '</a><br>Foursquare Data could not be loaded. Please try again later.</div>');
       }
     }).fail(function() {
-      console.log("Foursquare Data Could Not Be Loaded");
       infowindow.setContent('<div><a href="' + marker.url + '"target="_new">' + marker.title
         + '</a><br>Foursquare Data could not be loaded. Please try again later.</div>');
     });
@@ -322,14 +319,6 @@ var Place = function(data) {
 
 var viewModel = function() {
   var self = this;
-
-  // Property to determine whether filter is shown
-  self.filterVisible = ko.observable(false);
-
-  // Toggle whether the filter is shown
-  self.toggleFilter = function() {
-    self.filterVisible(!self.filterVisible());
-  }
 
   // Make an observable array containing all of the locations
   // and create a id for each one.
@@ -373,6 +362,26 @@ var viewModel = function() {
     map.panTo(self.currentMarker().getPosition());
   }
 
+  // Observable property to keep track whether filter is shown
+  self.filterVisible = ko.observable(false);
+
+  // Filter button text
+  self.buttonText = ko.observable("Filter Places");
+
+  // Observable property to keep track whether lis should be filtered or not
+  self.filtered = ko.observable(false);
+
+  // Toggle filter display
+  self.toggleFilter = function() {
+    self.filterVisible(!self.filterVisible());
+    self.filtered(!self.filtered());
+    if (!self.filtered()) {
+      self.showAllPlaces();
+      self.buttonText("Filter Places");
+      self.filterVisible(false);
+    }
+  }
+
   // Types list for filter
   self.typesList = ko.observableArray([]);
   for (var i = 0; i < types.length; i++) {
@@ -383,27 +392,33 @@ var viewModel = function() {
   self.removedPlaces = ko.observableArray([]);
 
   self.filterPlaces = function(placeType) {
+    // Hide filter once user makes a selection
     self.filterVisible(false);
 
-    // Remove all values whose type property is the selected place type,
-    // and return them as self.removedPlaces.
-    self.removedPlaces(self.placesList.remove(function (item) {
-      return item.type != placeType.keyword;
-    }));
+    if (self.filtered()) {
+      // Change button text
+      self.buttonText("Show All");
 
-    // Highlight the markers whose places are the placeType, and remove the rest
-    // from the map.
-    var labelIndex = 0;
-    for (var i = 0; i < markers.length; i++) {
-      if (markers[i].type == placeType.keyword) {
-        markers[i].setIcon(highlightedIcon);
-        markers[i].label = labels[labelIndex % labels.length];
-        labelIndex++;
-      } else {
-        markers[i].setMap(null);
+      // Remove all values whose type property is the selected place type,
+      // and return them as self.removedPlaces.
+      self.removedPlaces(self.placesList.remove(function (item) {
+        return item.type != placeType.keyword;
+      }));
+
+      // Highlight the markers whose places are the placeType, and remove the rest
+      // from the map.
+      var labelIndex = 0;
+      for (var i = 0; i < markers.length; i++) {
+        if (markers[i].type == placeType.keyword) {
+          markers[i].setIcon(highlightedIcon);
+          markers[i].label = labels[labelIndex % labels.length];
+          labelIndex++;
+        } else {
+          markers[i].setMap(null);
+        }
       }
     }
-  };
+  }; // end self.filterPlaces()
 
   // Restore the complete placesList by adding places in self.removedPlaces
   self.showAllPlaces = function() {
