@@ -89,7 +89,7 @@ nav {
 
 /* Dropdown Content (hidden by default) */
 .dropdown-content {
-    display: none;
+    /*display: none;*/
     position: absolute;
     background-color: #f9f9f9;
     min-width: 160px;
@@ -114,11 +114,11 @@ nav {
 }
 
 
-/* Show the dropdown menu on hover */
+/* Show the dropdown menu on hover
 .dropdown:hover .dropdown-content {
     display: block;
 }
-
+*/
 
 /* Change the background color of the dropdown button when the dropdown content is shown */
 .dropdown:hover .dropbtn {

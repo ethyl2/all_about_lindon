@@ -21,8 +21,8 @@
         <img id="city_logo" src="img/lindon_city_logo_with_transparency.png" alt="Lindon City Logo"></a>
 
       <div class="dropdown">
-        <button class="dropbtn">Filter Places</button>
-        <div class="dropdown-content">
+        <button data-bind="click: toggleFilter" class="dropbtn">Filter Places</button>
+        <div data-bind="visible: filterVisible" class="dropdown-content">
           <ul id="types_list" data-bind="foreach: typesList">
             <li><span data-bind="text: title, click: $parent.filterPlaces"</span></li>
           </ul>

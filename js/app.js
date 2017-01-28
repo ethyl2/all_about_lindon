@@ -323,6 +323,14 @@ var Place = function(data) {
 var viewModel = function() {
   var self = this;
 
+  // Property to determine whether filter is shown
+  self.filterVisible = ko.observable(false);
+
+  // Toggle whether the filter is shown
+  self.toggleFilter = function() {
+    self.filterVisible(!self.filterVisible());
+  }
+
   // Make an observable array containing all of the locations
   // and create a id for each one.
   self.placesList = ko.observableArray([]);
@@ -375,6 +383,8 @@ var viewModel = function() {
   self.removedPlaces = ko.observableArray([]);
 
   self.filterPlaces = function(placeType) {
+    self.filterVisible(false);
+
     // Remove all values whose type property is the selected place type,
     // and return them as self.removedPlaces.
     self.removedPlaces(self.placesList.remove(function (item) {
