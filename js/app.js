@@ -433,6 +433,7 @@ var viewModel = function() {
 
     // Empty the self.removedPlaces so they won't be added again by accident.
     self.removedPlaces.removeAll();
+
     // Restore display of all markers.
     var labelIndex = 0;
     for (var i = 0; i < markers.length; i++) {
@@ -441,6 +442,11 @@ var viewModel = function() {
       markers[i].label = labels[labelIndex % labels.length];
       labelIndex++;
     }
+    // Clear all previous highlighting
+    for (var i = 0; i < self.placesList().length; i++) {
+      self.placesList()[i].selected(false);
+    }
+
   };
 
   // Toggle nav display for better responsiveness
