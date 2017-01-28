@@ -344,16 +344,14 @@ var viewModel = function() {
   // infoWindow
   self.setCurrentPlace = function(place) {
 
-    // First, if currentMarker had previous value, set marker icon of previous
-    // currentMarker to default and cancel animation
-    if (self.currentMarker() != null) {
-      self.currentMarker().setIcon(defaultIcon);
-      self.currentMarker().setAnimation(null);
-
-      // Also, remove the highlighted style of the previously selected li
-      var $selectedLi = document.getElementById(self.currentPlace().id);
+    // Remove previous highlighting and set marker icons to default/no animation
+    for (var i = 0; i < self.placesList().length; i++) {
+      self.placesList()[i].selected(false);
+      var $selectedLi = document.getElementById(self.placesList()[i].id);
       $selectedLi.classList.remove('markerSelected');
-      self.currentPlace().selected(false);
+      var marker = markers[self.placesList()[i].id];
+      marker.setIcon(defaultIcon);
+      marker.setAnimation(null);
     }
 
     // Ready to display the new selection
@@ -440,6 +438,6 @@ ko.applyBindings(new viewModel());
 //Error handler for Google Maps API
 function errorhandler() {
   var $map = document.getElementById('map');
-  $map.innerHTML = "<h1 style='margin: 5em'> Google Maps API is not loading." +
+  $map.innerHTML = "<h1 style='margin: 5em'> Google Maps API is not loading. " +
     "Please try again later.</h1>";
 }
